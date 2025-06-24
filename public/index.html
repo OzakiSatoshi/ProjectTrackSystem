@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>案件管理システム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .actions {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        button.secondary {
+            background: #95a5a6;
+        }
+        
+        button.secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        button.danger {
+            background: #e74c3c;
+        }
+        
+        button.danger:hover {
+            background: #c0392b;
+        }
+        
+        input, select, textarea {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-1 { background: #e3f2fd; color: #1976d2; }
+        .status-2 { background: #e8f5e8; color: #388e3c; }
+        .status-3 { background: #f3e5f5; color: #7b1fa2; }
+        .status-4 { background: #fff3e0; color: #f57c00; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>案件管理システム</h1>
+            <p>プロジェクト、連絡先、および取引先の管理</p>
+        </header>
+        
+        <div class="actions">
+            <button onclick="openModal('ankenModal')">新規案件作成</button>
+            <button onclick="openModal('contactModal')" class="secondary">連絡先追加</button>
+            <button onclick="openModal('accountModal')" class="secondary">取引先追加</button>
+            <button onclick="loadData()" class="secondary">更新</button>
+        </div>
+        
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>案件名</th>
+                            <th>連絡先</th>
+                            <th>取引先</th>
+                            <th>ステータス</th>
+                            <th>開始日</th>
+                            <th>終了日</th>
+                            <th>価格</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ankenTable">
+                        <tr>
+                            <td colspan="8" class="loading">読み込み中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Anken Modal -->
+    <div id="ankenModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="ankenModalTitle">案件作成</h3>
+                <span class="close" onclick="closeModal('ankenModal')">&times;</span>
+            </div>
+            <form id="ankenForm">
+                <div class="form-group">
+                    <label for="anken_name">案件名 *</label>
+                    <input type="text" id="anken_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact_id">連絡先</label>
+                    <select id="contact_id">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="detail">詳細</label>
+                    <textarea id="detail" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="status_code">ステータス</label>
+                    <select id="status_code">
+                        <option value="1">新規</option>
+                        <option value="2">進行中</option>
+                        <option value="3">完了</option>
+                        <option value="4">保留</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="start_date">開始日</label>
+                    <input type="date" id="start_date">
+                </div>
+                <div class="form-group">
+                    <label for="end_date">終了日</label>
+                    <input type="date" id="end_date">
+                </div>
+                <div class="form-group">
+                    <label for="price">価格</label>
+                    <input type="text" id="price" placeholder="¥1,000,000">
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal('ankenModal')" class="secondary">キャンセル</button>
+                    <button type="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>連絡先追加</h3>
+                <span class="close" onclick="closeModal('contactModal')">&times;</span>
+            </div>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="contact_name">連絡先名 *</label>
+                    <input type="text" id="contact_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="account_id">取引先</label>
+                    <select id="account_id" required>
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal('contactModal')" class="secondary">キャンセル</button>
+                    <button type="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>取引先追加</h3>
+                <span class="close" onclick="closeModal('accountModal')">&times;</span>
+            </div>
+            <form id="accountForm">
+                <div class="form-group">
+                    <label for="account_name">取引先名 *</label>
+                    <input type="text" id="account_name" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal('accountModal')" class="secondary">キャンセル</button>
+                    <button type="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentAnkenId = null;
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            document.getElementById('ankenForm').addEventListener('submit', handleAnkenSubmit);
+            document.getElementById('contactForm').addEventListener('submit', handleContactSubmit);
+            document.getElementById('accountForm').addEventListener('submit', handleAccountSubmit);
+        }
+        
+        async function loadData() {
+            await Promise.all([
+                loadAnken(),
+                loadAccounts(),
+                loadContacts()
+            ]);
+        }
+        
+        async function loadAnken() {
+            try {
+                const response = await fetch('/api/anken');
+                const anken = await response.json();
+                renderAnkenTable(anken);
+            } catch (error) {
+                console.error('Error loading anken:', error);
+                document.getElementById('ankenTable').innerHTML = 
+                    '<tr><td colspan="8" class="empty-state">データの読み込みに失敗しました</td></tr>';
+            }
+        }
+        
+        async function loadAccounts() {
+            try {
+                const response = await fetch('/api/accounts');
+                const accounts = await response.json();
+                populateAccountSelect(accounts);
+            } catch (error) {
+                console.error('Error loading accounts:', error);
+            }
+        }
+        
+        async function loadContacts() {
+            try {
+                const response = await fetch('/api/contacts');
+                const contacts = await response.json();
+                populateContactSelect(contacts);
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            }
+        }
+        
+        function renderAnkenTable(anken) {
+            const tbody = document.getElementById('ankenTable');
+            
+            if (anken.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">案件がありません</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = anken.map(item => `
+                <tr>
+                    <td>${item.anken_name || '-'}</td>
+                    <td>${item.contact_name || '-'}</td>
+                    <td>${item.account_name || '-'}</td>
+                    <td>
+                        <span class="status status-${item.status_code || 1}">
+                            ${getStatusLabel(item.status_code)}
+                        </span>
+                    </td>
+                    <td>${item.start_date || '-'}</td>
+                    <td>${item.end_date || '-'}</td>
+                    <td>${item.price || '-'}</td>
+                    <td>
+                        <button onclick="editAnken('${item.anken_id}')" class="secondary" style="font-size: 12px; padding: 5px 10px;">編集</button>
+                        <button onclick="deleteAnken('${item.anken_id}')" class="danger" style="font-size: 12px; padding: 5px 10px;">削除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function populateAccountSelect(accounts) {
+            const select = document.getElementById('account_id');
+            select.innerHTML = '<option value="">選択してください</option>' +
+                accounts.map(account => 
+                    `<option value="${account.account_id}">${account.account_name}</option>`
+                ).join('');
+        }
+        
+        function populateContactSelect(contacts) {
+            const select = document.getElementById('contact_id');
+            select.innerHTML = '<option value="">選択してください</option>' +
+                contacts.map(contact => 
+                    `<option value="${contact.contact_id}">${contact.contact_name} (${contact.account?.account_name || '所属なし'})</option>`
+                ).join('');
+        }
+        
+        function getStatusLabel(statusCode) {
+            const statusMap = {
+                1: '新規',
+                2: '進行中', 
+                3: '完了',
+                4: '保留'
+            };
+            return statusMap[statusCode] || '不明';
+        }
+        
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            if (modalId === 'ankenModal') {
+                currentAnkenId = null;
+                document.getElementById('ankenModalTitle').textContent = '案件作成';
+                document.getElementById('ankenForm').reset();
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        async function handleAnkenSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                anken_name: document.getElementById('anken_name').value,
+                contact_id: document.getElementById('contact_id').value || null,
+                detail: document.getElementById('detail').value,
+                status_code: parseInt(document.getElementById('status_code').value),
+                start_date: document.getElementById('start_date').value,
+                end_date: document.getElementById('end_date').value,
+                price: document.getElementById('price').value
+            };
+            
+            try {
+                const url = currentAnkenId ? `/api/anken/${currentAnkenId}` : '/api/anken';
+                const method = currentAnkenId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    closeModal('ankenModal');
+                    loadAnken();
+                } else {
+                    alert('保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error saving anken:', error);
+                alert('保存に失敗しました');
+            }
+        }
+        
+        async function handleContactSubmit(e) {
+            e.preventDefault();
+            
+            const data = {
+                contact_name: document.getElementById('contact_name').value,
+                account_id: document.getElementById('account_id').value
+            };
+            
+            try {
+                const response = await fetch('/api/contacts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    closeModal('contactModal');
+                    document.getElementById('contactForm').reset();
+                    loadContacts();
+                } else {
+                    alert('保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error saving contact:', error);
+                alert('保存に失敗しました');
+            }
+        }
+        
+        async function handleAccountSubmit(e) {
+            e.preventDefault();
+            
+            const data = {
+                account_name: document.getElementById('account_name').value
+            };
+            
+            try {
+                const response = await fetch('/api/accounts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    closeModal('accountModal');
+                    document.getElementById('accountForm').reset();
+                    loadAccounts();
+                } else {
+                    alert('保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error saving account:', error);
+                alert('保存に失敗しました');
+            }
+        }
+        
+        async function editAnken(ankenId) {
+            try {
+                const response = await fetch(`/api/anken/${ankenId}`);
+                const anken = await response.json();
+                
+                currentAnkenId = ankenId;
+                document.getElementById('ankenModalTitle').textContent = '案件編集';
+                
+                // Populate form
+                document.getElementById('anken_name').value = anken.anken_name || '';
+                document.getElementById('contact_id').value = anken.contact_id || '';
+                document.getElementById('detail').value = anken.detail || '';
+                document.getElementById('status_code').value = anken.status_code || 1;
+                document.getElementById('start_date').value = anken.start_date || '';
+                document.getElementById('end_date').value = anken.end_date || '';
+                document.getElementById('price').value = anken.price || '';
+                
+                openModal('ankenModal');
+            } catch (error) {
+                console.error('Error loading anken for edit:', error);
+                alert('案件の読み込みに失敗しました');
+            }
+        }
+        
+        async function deleteAnken(ankenId) {
+            if (!confirm('この案件を削除しますか？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/anken/${ankenId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadAnken();
+                } else {
+                    alert('削除に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error deleting anken:', error);
+                alert('削除に失敗しました');
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

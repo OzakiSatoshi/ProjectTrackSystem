@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  account_id   String    @id @default(uuid()) @db.Uuid
+  account_name String    @db.Text
+  contacts     Contact[]
+
+  @@map("accounts")
+}
+
+model Contact {
+  contact_id   String  @id @default(uuid()) @db.Uuid
+  contact_name String  @db.Text
+  account_id   String  @db.Uuid
+  account      Account @relation(fields: [account_id], references: [account_id])
+  anken        Anken[]
+
+  @@map("contacts")
+}
+
+model Anken {
+  anken_id     String    @id @default(uuid()) @db.Uuid
+  anken_name   String    @db.Text
+  contact_id   String?   @db.Uuid
+  detail       String?   @db.Text
+  notes        String?   @db.Text
+  start_date   String?   @db.Text
+  end_date     String?   @db.Text
+  status_code  Int?
+  price        String?   @db.Text
+  limit_date   String?   @db.Text
+  contract     String?   @db.Text
+  meeting      String?   @db.Text
+  foreigner    String?   @db.Text
+  telework     String?   @db.Text
+  telework_yn  Int?
+  required_skills String? @db.Text
+  nice_skills  String?   @db.Text
+  process      String?   @db.Text
+  platform     String?   @db.Text
+  framework    String?   @db.Text
+  program      String?   @db.Text
+  db           String?   @db.Text
+  location     String?   @db.Text
+  ken          String?   @db.Text
+  time_from    String?   @db.Text
+  time_to      String?   @db.Text
+  duplicate_check String? @db.Text
+  persons      String?   @db.Text
+  created_at   String?   @db.Text
+  updated_at   String?   @db.Text
+  contact      Contact?  @relation(fields: [contact_id], references: [contact_id])
+
+  @@map("anken")
+}

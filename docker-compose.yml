@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: anken_user
+      POSTGRES_PASSWORD: anken_password
+      POSTGRES_DB: anken_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - anken_network
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://anken_user:anken_password@postgres:5432/anken_db
+      NODE_ENV: production
+    depends_on:
+      - postgres
+    networks:
+      - anken_network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+
+networks:
+  anken_network:
+    driver: bridge
