@@ -8,19 +8,66 @@ datasource db {
 }
 
 model Account {
-  account_id   String    @id @default(uuid()) @db.Uuid
-  account_name String    @db.Text
-  contacts     Contact[]
+  account_id       String    @id @default(uuid()) @db.Uuid
+  account_name     String    @db.Text
+  account_number   String?   @db.Text
+  telephone1       String?   @db.Text
+  telephone2       String?   @db.Text
+  fax              String?   @db.Text
+  website_url      String?   @db.Text
+  email_address1   String?   @db.Text
+  email_address2   String?   @db.Text
+  
+  // Address information
+  address1_line1   String?   @db.Text
+  address1_line2   String?   @db.Text
+  address1_city    String?   @db.Text
+  address1_state   String?   @db.Text
+  address1_postal  String?   @db.Text
+  address1_country String?   @db.Text
+  
+  // Business information
+  industry_code    String?   @db.Text
+  revenue          String?   @db.Text
+  employees        String?   @db.Text
+  description      String?   @db.Text
+  
+  // Status and classification
+  status_code      Int?      @default(1)
+  customer_type    String?   @db.Text
+  account_rating   String?   @db.Text
+  
+  contacts         Contact[]
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
 
   @@map("accounts")
 }
 
 model Contact {
-  contact_id   String  @id @default(uuid()) @db.Uuid
-  contact_name String  @db.Text
-  account_id   String  @db.Uuid
-  account      Account @relation(fields: [account_id], references: [account_id])
-  anken        Anken[]
+  contact_id     String    @id @default(uuid()) @db.Uuid
+  contact_name   String    @db.Text
+  account_id     String    @db.Uuid
+  
+  // Contact details
+  telephone1     String?   @db.Text
+  telephone2     String?   @db.Text
+  mobile_phone   String?   @db.Text
+  email_address1 String?   @db.Text
+  email_address2 String?   @db.Text
+  fax            String?   @db.Text
+  
+  // Position information
+  job_title      String?   @db.Text
+  department     String?   @db.Text
+  
+  // Status
+  status_code    Int?      @default(1)
+  
+  account        Account   @relation(fields: [account_id], references: [account_id])
+  anken          Anken[]
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
 
   @@map("contacts")
 }

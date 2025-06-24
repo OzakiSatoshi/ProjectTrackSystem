@@ -102,6 +102,14 @@ The core entity is `anken` (project) with comprehensive fields:
 - **Environment**: Requires `DATABASE_URL` for PostgreSQL connection
 
 ## Changelog
+- June 24, 2025: Enhanced database schema based on real account data
+  - Expanded Account model with comprehensive business fields (address, contact info, industry, revenue)
+  - Enhanced Contact model with job details and contact information
+  - Updated forms to capture detailed account and contact information
+  - Removed unnecessary status and meeting fields from anken
+  - Implemented telework display with symbols (〇△✕) and legends
+  - Added comprehensive search and filter functionality
+  - Converted to card-based layout for better information display
 - June 24, 2025: Converted to Prisma-based relational system
   - Implemented PostgreSQL with Prisma ORM
   - Added accounts, contacts, and anken tables with foreign key relationships
