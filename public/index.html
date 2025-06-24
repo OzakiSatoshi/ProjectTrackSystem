@@ -381,8 +381,9 @@
                         <label for="filterTelework">テレワーク</label>
                         <select id="filterTelework" onchange="applyFilters()">
                             <option value="">すべて</option>
-                            <option value="1">可能</option>
-                            <option value="0">不可</option>
+                            <option value="full">〇 フルテレワーク</option>
+                            <option value="partial">△ 部分テレワーク</option>
+                            <option value="none">✕ 完全常駐</option>
                         </select>
                     </div>
                 </div>
@@ -608,7 +609,7 @@
                         </div>
                         <div class="anken-info-item">
                             <span class="anken-info-label">テレワーク</span>
-                            <span class="anken-info-value">${item.telework_yn === 1 ? '可能' : item.telework_yn === 0 ? '不可' : '-'}</span>
+                            <span class="anken-info-value">${getTeleworkDisplay(item.telework_yn)}</span>
                         </div>
                     </div>
                     
@@ -643,14 +644,13 @@
                 ).join('');
         }
         
-        function getStatusLabel(statusCode) {
-            const statusMap = {
-                1: '新規',
-                2: '進行中', 
-                3: '完了',
-                4: '保留'
-            };
-            return statusMap[statusCode] || '不明';
+        function getTeleworkDisplay(teleworkYn) {
+            switch(teleworkYn) {
+                case 2: return '〇 フルテレワーク';
+                case 1: return '△ 部分テレワーク';
+                case 0: return '✕ 完全常駐';
+                default: return '-';
+            }
         }
         
         function openModal(modalId) {
@@ -913,7 +913,9 @@
                 
                 // Telework filter
                 const teleworkMatch = !filterTelework || 
-                    item.telework_yn === parseInt(filterTelework);
+                    (filterTelework === 'full' && item.telework_yn === 2) ||
+                    (filterTelework === 'partial' && item.telework_yn === 1) ||
+                    (filterTelework === 'none' && item.telework_yn === 0);
                 
                 return textMatch && locationMatch && kenMatch && programMatch && 
                        platformMatch && processMatch && teleworkMatch;
