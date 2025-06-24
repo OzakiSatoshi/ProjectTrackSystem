@@ -416,7 +416,7 @@
                     <input type="text" id="anken_name" required>
                 </div>
                 <div class="form-group">
-                    <label for="contact_id">連絡先</label>
+                    <label for="contact_id">担当者</label>
                     <select id="contact_id">
                         <option value="">選択してください</option>
                     </select>
@@ -539,10 +539,7 @@
                         <input type="text" id="telework" placeholder="週2-3日在宅等">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="duplicate_check">重複チェック</label>
-                    <input type="text" id="duplicate_check" placeholder="類似案件との重複確認用">
-                </div>
+
                 
                 <div class="form-actions">
                     <button type="button" onclick="closeModal('ankenModal')" class="secondary">キャンセル</button>
@@ -1065,12 +1062,7 @@
                         </div>
                     ` : ''}
                     
-                    ${anken.duplicate_check ? `
-                        <div style="margin-bottom: 20px;">
-                            <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">重複チェック</h4>
-                            <p style="line-height: 1.6; color: #666;">${anken.duplicate_check}</p>
-                        </div>
-                    ` : ''}
+
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div>
