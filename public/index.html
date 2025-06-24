@@ -473,31 +473,81 @@
             </div>
             <form id="contactForm">
                 <div class="form-group">
-                    <label for="contact_name">連絡先名 *</label>
-                    <input type="text" id="contact_name" required>
-                </div>
-                <div class="form-group">
                     <label for="account_id">取引先 *</label>
                     <select id="account_id" required>
                         <option value="">選択してください</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="job_title">役職</label>
-                    <input type="text" id="job_title" placeholder="営業部長">
+                
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="salutation">敬称</label>
+                        <select id="salutation">
+                            <option value="">選択</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Ms.">Ms.</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact_name">連絡先名 *</label>
+                        <input type="text" id="contact_name" required placeholder="山田 太郎">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="department">部署</label>
-                    <input type="text" id="department" placeholder="営業部">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="firstname">名</label>
+                        <input type="text" id="firstname" placeholder="太郎">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">姓</label>
+                        <input type="text" id="lastname" placeholder="山田">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="contact_telephone1">電話番号</label>
-                    <input type="text" id="contact_telephone1" placeholder="03-1234-5678">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="jobtitle">役職</label>
+                        <input type="text" id="jobtitle" placeholder="営業部長">
+                    </div>
+                    <div class="form-group">
+                        <label for="department">部署</label>
+                        <input type="text" id="department" placeholder="営業部">
+                    </div>
                 </div>
+                
                 <div class="form-group">
-                    <label for="contact_email_address1">メールアドレス</label>
-                    <input type="email" id="contact_email_address1" placeholder="yamada@company.com">
+                    <label for="company">会社名</label>
+                    <input type="text" id="company" placeholder="所属会社（取引先と異なる場合）">
                 </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="telephone1">電話番号</label>
+                        <input type="text" id="telephone1" placeholder="03-1234-5678">
+                    </div>
+                    <div class="form-group">
+                        <label for="mobilephone">携帯電話</label>
+                        <input type="text" id="mobilephone" placeholder="090-1234-5678">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email_address1">メールアドレス</label>
+                    <input type="email" id="email_address1" placeholder="yamada@company.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address1_line1">住所</label>
+                    <input type="text" id="address1_line1" placeholder="東京都渋谷区...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">備考</label>
+                    <textarea id="description" rows="2" placeholder="追加情報"></textarea>
+                </div>
+                
                 <div class="form-actions">
                     <button type="button" onclick="closeModal('contactModal')" class="secondary">キャンセル</button>
                     <button type="submit">保存</button>

@@ -49,20 +49,49 @@ model Contact {
   contact_name   String    @db.Text
   account_id     String    @db.Uuid
   
+  // Name fields
+  firstname      String?   @db.Text
+  lastname       String?   @db.Text
+  fullname       String?   @db.Text
+  
   // Contact details
   telephone1     String?   @db.Text
   telephone2     String?   @db.Text
-  mobile_phone   String?   @db.Text
+  telephone3     String?   @db.Text
+  mobilephone    String?   @db.Text
   email_address1 String?   @db.Text
   email_address2 String?   @db.Text
+  email_address3 String?   @db.Text
   fax            String?   @db.Text
   
   // Position information
-  job_title      String?   @db.Text
+  jobtitle       String?   @db.Text
   department     String?   @db.Text
+  company        String?   @db.Text
+  manager_name   String?   @db.Text
+  manager_phone  String?   @db.Text
   
-  // Status
-  status_code    Int?      @default(1)
+  // Address information
+  address1_line1 String?   @db.Text
+  address1_line2 String?   @db.Text
+  address1_city  String?   @db.Text
+  address1_state String?   @db.Text
+  address1_postal String?  @db.Text
+  address1_country String? @db.Text
+  address1_telephone1 String? @db.Text
+  
+  // Additional details
+  salutation     String?   @db.Text
+  suffix         String?   @db.Text
+  nickname       String?   @db.Text
+  birthdate      String?   @db.Text
+  anniversary    String?   @db.Text
+  description    String?   @db.Text
+  
+  // Status and preferences
+  statuscode     Int?      @default(1)
+  gendercode     Int?
+  preferred_contact_method Int?
   
   account        Account   @relation(fields: [account_id], references: [account_id])
   anken          Anken[]
