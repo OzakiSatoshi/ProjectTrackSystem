@@ -379,7 +379,7 @@ export default function ProjectFormModal({ isOpen, onClose, mode, project }: Pro
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">選択してください</SelectItem>
+                          <SelectItem value="none">選択してください</SelectItem>
                           <SelectItem value="東京都">東京都</SelectItem>
                           <SelectItem value="大阪府">大阪府</SelectItem>
                           <SelectItem value="愛知県">愛知県</SelectItem>

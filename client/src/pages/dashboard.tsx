@@ -12,7 +12,7 @@ import type { Anken } from "@shared/schema";
 
 export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -89,7 +89,7 @@ export default function Dashboard() {
                       <SelectValue placeholder="すべてのステータス" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">すべてのステータス</SelectItem>
+                      <SelectItem value="all">すべてのステータス</SelectItem>
                       <SelectItem value="1">新規</SelectItem>
                       <SelectItem value="2">進行中</SelectItem>
                       <SelectItem value="3">完了</SelectItem>

@@ -24,7 +24,7 @@ export default function ProjectTable({ searchTerm, statusFilter, onEdit, onView 
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchTerm) params.set("search", searchTerm);
-      if (statusFilter) params.set("status", statusFilter);
+      if (statusFilter && statusFilter !== "all") params.set("status", statusFilter);
       
       const response = await fetch(`/api/anken?${params}`);
       if (!response.ok) throw new Error("Failed to fetch projects");

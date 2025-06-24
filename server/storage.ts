@@ -37,10 +37,36 @@ export class MemStorage implements IStorage {
     const id = uuidv4();
     const now = new Date().toISOString();
     const newAnken: Anken = {
-      ...insertAnken,
       anken_id: id,
+      anken_name: insertAnken.anken_name || null,
+      detail: insertAnken.detail || null,
+      notes: insertAnken.notes || null,
+      start_date: insertAnken.start_date || null,
+      end_date: insertAnken.end_date || null,
+      status_code: insertAnken.status_code || null,
       created_at: now,
+      price: insertAnken.price || null,
+      limit_date: insertAnken.limit_date || null,
+      contract: insertAnken.contract || null,
+      meeting: insertAnken.meeting || null,
+      foreigner: insertAnken.foreigner || null,
+      telework: insertAnken.telework || null,
+      telework_yn: insertAnken.telework_yn || null,
+      required_skills: insertAnken.required_skills || null,
+      nice_skills: insertAnken.nice_skills || null,
+      process: insertAnken.process || null,
+      platform: insertAnken.platform || null,
+      framework: insertAnken.framework || null,
+      program: insertAnken.program || null,
+      db: insertAnken.db || null,
+      location: insertAnken.location || null,
+      ken: insertAnken.ken || null,
+      time_from: insertAnken.time_from || null,
+      time_to: insertAnken.time_to || null,
       updated_at: now,
+      duplicate_check: insertAnken.duplicate_check || null,
+      persons: insertAnken.persons || null,
+      contact_id: insertAnken.contact_id || null,
     };
     this.anken.set(id, newAnken);
     return newAnken;
