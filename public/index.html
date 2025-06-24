@@ -378,12 +378,12 @@
                     </div>
 
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label for="filterTelework">テレワーク</label>
+                        <label for="filterTelework">テレワーク <small style="color: #999; font-size: 10px;">(〇:フル △:部分 ✕:常駐)</small></label>
                         <select id="filterTelework" onchange="applyFilters()">
                             <option value="">すべて</option>
-                            <option value="full">〇 フルテレワーク</option>
-                            <option value="partial">△ 部分テレワーク</option>
-                            <option value="none">✕ 完全常駐</option>
+                            <option value="full">〇</option>
+                            <option value="partial">△</option>
+                            <option value="none">✕</option>
                         </select>
                     </div>
                 </div>
@@ -446,6 +446,16 @@
                     <label for="program">プログラム言語</label>
                     <input type="text" id="program" placeholder="Java, Python, JavaScript">
                 </div>
+                
+                <div class="form-group">
+                    <label for="telework_yn">テレワーク <small style="color: #999; font-size: 10px;">(〇:フル △:部分 ✕:常駐)</small></label>
+                    <select id="telework_yn">
+                        <option value="0">✕</option>
+                        <option value="1">△</option>
+                        <option value="2">〇</option>
+                    </select>
+                </div>
+                
                 <div class="form-actions">
                     <button type="button" onclick="closeModal('ankenModal')" class="secondary">キャンセル</button>
                     <button type="submit">保存</button>
@@ -608,7 +618,7 @@
                             <span class="anken-info-value">${item.start_date || '-'} ～ ${item.end_date || '-'}</span>
                         </div>
                         <div class="anken-info-item">
-                            <span class="anken-info-label">テレワーク</span>
+                            <span class="anken-info-label">テレワーク <small style="color: #999; font-size: 9px;">(〇:フル △:部分 ✕:常駐)</small></span>
                             <span class="anken-info-value">${getTeleworkDisplay(item.telework_yn)}</span>
                         </div>
                     </div>
@@ -646,9 +656,9 @@
         
         function getTeleworkDisplay(teleworkYn) {
             switch(teleworkYn) {
-                case 2: return '〇 フルテレワーク';
-                case 1: return '△ 部分テレワーク';
-                case 0: return '✕ 完全常駐';
+                case 2: return '〇';
+                case 1: return '△';
+                case 0: return '✕';
                 default: return '-';
             }
         }
@@ -829,7 +839,7 @@
                             <div style="margin-bottom: 10px;"><strong>工程:</strong> ${anken.process || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>プログラム言語:</strong> ${anken.program || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>テレワーク:</strong> 
-                                ${anken.telework_yn === 1 ? '可能' : anken.telework_yn === 0 ? '不可' : '-'}
+                                ${getTeleworkDisplay(anken.telework_yn)} <small style="color: #999; font-size: 10px;">(〇:フル △:部分 ✕:常駐)</small>
                             </div>
                         </div>
                     </div>
