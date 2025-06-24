@@ -224,16 +224,22 @@
             }
             
             table {
-                font-size: 14px;
+                font-size: 12px;
             }
             
             th, td {
-                padding: 8px;
+                padding: 6px 4px;
             }
             
             .modal-content {
                 margin: 10% auto;
                 width: 95%;
+            }
+            
+            /* Hide some columns on mobile for better fit */
+            th:nth-child(4), td:nth-child(4), /* 工程 */
+            th:nth-child(5), td:nth-child(5) /* 言語 */ {
+                display: none;
             }
         }
     </style>
@@ -262,6 +268,7 @@
                             <th>取引先</th>
                             <th>工程</th>
                             <th>言語</th>
+                            <th>作業場所</th>
                             <th>テレワーク</th>
                             <th>ステータス</th>
                             <th>価格</th>
@@ -270,7 +277,7 @@
                     </thead>
                     <tbody id="ankenTable">
                         <tr>
-                            <td colspan="9" class="loading">読み込み中...</td>
+                            <td colspan="10" class="loading">読み込み中...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -430,7 +437,7 @@
             } catch (error) {
                 console.error('Error loading anken:', error);
                 document.getElementById('ankenTable').innerHTML = 
-                    '<tr><td colspan="9" class="empty-state">データの読み込みに失敗しました</td></tr>';
+                    '<tr><td colspan="10" class="empty-state">データの読み込みに失敗しました</td></tr>';
             }
         }
         
@@ -458,7 +465,7 @@
             const tbody = document.getElementById('ankenTable');
             
             if (anken.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">案件がありません</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">案件がありません</td></tr>';
                 return;
             }
             
@@ -469,6 +476,9 @@
                     <td>${item.account_name || '-'}</td>
                     <td>${item.process || '-'}</td>
                     <td>${item.program || '-'}</td>
+                    <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.location || '-'}">
+                        ${item.location || '-'}
+                    </td>
                     <td>
                         <span class="telework-status">
                             ${item.telework_yn === 1 ? '可能' : item.telework_yn === 0 ? '不可' : '-'}
