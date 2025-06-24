@@ -317,6 +317,12 @@
                 margin: 10% auto;
                 width: 95%;
             }
+            
+            /* Mobile search filters - stack vertically */
+            .card div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
         }
     </style>
 </head>
@@ -332,6 +338,68 @@
             <button onclick="openModal('contactModal')" class="secondary">連絡先追加</button>
             <button onclick="openModal('accountModal')" class="secondary">取引先追加</button>
             <button onclick="loadData()" class="secondary">更新</button>
+        </div>
+        
+        <!-- Search and Filter Panel -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div style="padding: 20px;">
+                <h3 style="margin: 0 0 15px 0; color: #2c3e50;">検索・フィルター</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="searchText">案件名・詳細</label>
+                        <input type="text" id="searchText" placeholder="キーワードで検索..." onInput="applyFilters()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterLocation">勤務地</label>
+                        <input type="text" id="filterLocation" placeholder="勤務地で検索..." onInput="applyFilters()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterKen">都道府県</label>
+                        <select id="filterKen" onchange="applyFilters()">
+                            <option value="">すべて</option>
+                            <option value="東京都">東京都</option>
+                            <option value="大阪府">大阪府</option>
+                            <option value="愛知県">愛知県</option>
+                            <option value="福岡県">福岡県</option>
+                            <option value="リモート">リモート</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterProgram">プログラム言語</label>
+                        <input type="text" id="filterProgram" placeholder="Java, Python..." onInput="applyFilters()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterPlatform">プラットフォーム</label>
+                        <input type="text" id="filterPlatform" placeholder="Web, Mobile..." onInput="applyFilters()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterProcess">工程</label>
+                        <input type="text" id="filterProcess" placeholder="設計, 開発..." onInput="applyFilters()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterStatus">ステータス</label>
+                        <select id="filterStatus" onchange="applyFilters()">
+                            <option value="">すべて</option>
+                            <option value="1">新規</option>
+                            <option value="2">進行中</option>
+                            <option value="3">完了</option>
+                            <option value="4">保留</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterTelework">テレワーク</label>
+                        <select id="filterTelework" onchange="applyFilters()">
+                            <option value="">すべて</option>
+                            <option value="1">可能</option>
+                            <option value="0">不可</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button onclick="clearFilters()" class="secondary" style="padding: 8px 16px;">フィルタークリア</button>
+                    <span id="resultCount" style="color: #666; font-size: 14px;"></span>
+                </div>
+            </div>
         </div>
         
         <div class="card">
@@ -466,6 +534,7 @@
 
     <script>
         let currentAnkenId = null;
+        let allAnken = []; // Store all anken data for filtering
         
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -490,8 +559,8 @@
         async function loadAnken() {
             try {
                 const response = await fetch('/api/anken');
-                const anken = await response.json();
-                renderAnkenCards(anken);
+                allAnken = await response.json();
+                applyFilters();
             } catch (error) {
                 console.error('Error loading anken:', error);
                 document.getElementById('ankenGrid').innerHTML = 
@@ -645,7 +714,7 @@
                 
                 if (response.ok) {
                     closeModal('ankenModal');
-                    loadAnken();
+                    loadAnken(); // This will reload and reapply filters
                 } else {
                     alert('保存に失敗しました');
                 }
@@ -747,7 +816,7 @@
                 });
                 
                 if (response.ok) {
-                    loadAnken();
+                    loadAnken(); // This will reload and reapply filters
                 } else {
                     alert('削除に失敗しました');
                 }
@@ -829,6 +898,78 @@
             } catch (error) {
                 console.error('Error loading anken details:', error);
                 alert('案件詳細の読み込みに失敗しました');
+            }
+        }
+        
+        function applyFilters() {
+            const searchText = document.getElementById('searchText').value.toLowerCase();
+            const filterLocation = document.getElementById('filterLocation').value.toLowerCase();
+            const filterKen = document.getElementById('filterKen').value;
+            const filterProgram = document.getElementById('filterProgram').value.toLowerCase();
+            const filterPlatform = document.getElementById('filterPlatform').value.toLowerCase();
+            const filterProcess = document.getElementById('filterProcess').value.toLowerCase();
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterTelework = document.getElementById('filterTelework').value;
+            
+            const filteredAnken = allAnken.filter(item => {
+                // Text search in name and detail
+                const textMatch = !searchText || 
+                    (item.anken_name && item.anken_name.toLowerCase().includes(searchText)) ||
+                    (item.detail && item.detail.toLowerCase().includes(searchText));
+                
+                // Location filter
+                const locationMatch = !filterLocation || 
+                    (item.location && item.location.toLowerCase().includes(filterLocation));
+                
+                // Prefecture filter
+                const kenMatch = !filterKen || item.ken === filterKen;
+                
+                // Programming language filter
+                const programMatch = !filterProgram || 
+                    (item.program && item.program.toLowerCase().includes(filterProgram));
+                
+                // Platform filter
+                const platformMatch = !filterPlatform || 
+                    (item.platform && item.platform.toLowerCase().includes(filterPlatform));
+                
+                // Process filter
+                const processMatch = !filterProcess || 
+                    (item.process && item.process.toLowerCase().includes(filterProcess));
+                
+                // Status filter
+                const statusMatch = !filterStatus || 
+                    item.status_code === parseInt(filterStatus);
+                
+                // Telework filter
+                const teleworkMatch = !filterTelework || 
+                    item.telework_yn === parseInt(filterTelework);
+                
+                return textMatch && locationMatch && kenMatch && programMatch && 
+                       platformMatch && processMatch && statusMatch && teleworkMatch;
+            });
+            
+            renderAnkenCards(filteredAnken);
+            updateResultCount(filteredAnken.length, allAnken.length);
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchText').value = '';
+            document.getElementById('filterLocation').value = '';
+            document.getElementById('filterKen').value = '';
+            document.getElementById('filterProgram').value = '';
+            document.getElementById('filterPlatform').value = '';
+            document.getElementById('filterProcess').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterTelework').value = '';
+            applyFilters();
+        }
+        
+        function updateResultCount(filtered, total) {
+            const resultCount = document.getElementById('resultCount');
+            if (filtered === total) {
+                resultCount.textContent = `${total}件の案件`;
+            } else {
+                resultCount.textContent = `${filtered}件表示 / 全${total}件`;
             }
         }
         
