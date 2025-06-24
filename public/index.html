@@ -425,35 +425,123 @@
                     <label for="detail">詳細</label>
                     <textarea id="detail" rows="3"></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="notes">備考</label>
+                    <textarea id="notes" rows="2"></textarea>
+                </div>
 
+                <h4 style="margin: 20px 0 10px 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">期間・価格</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="start_date">開始日</label>
+                        <input type="date" id="start_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">終了日</label>
+                        <input type="date" id="end_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="limit_date">締切日</label>
+                        <input type="date" id="limit_date">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="price">価格</label>
+                        <input type="text" id="price" placeholder="¥1,000,000">
+                    </div>
+                    <div class="form-group">
+                        <label for="contract">契約形態</label>
+                        <input type="text" id="contract" placeholder="準委任、請負等">
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">技術要件</h4>
                 <div class="form-group">
-                    <label for="start_date">開始日</label>
-                    <input type="date" id="start_date">
+                    <label for="required_skills">必須スキル</label>
+                    <textarea id="required_skills" rows="2" placeholder="Java, Spring Boot, AWS等"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="end_date">終了日</label>
-                    <input type="date" id="end_date">
+                    <label for="nice_skills">歓迎スキル</label>
+                    <textarea id="nice_skills" rows="2" placeholder="Docker, Kubernetes等"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="process">工程</label>
+                        <input type="text" id="process" placeholder="要件定義、設計、開発">
+                    </div>
+                    <div class="form-group">
+                        <label for="program">プログラム言語</label>
+                        <input type="text" id="program" placeholder="Java, Python, JavaScript">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="platform">プラットフォーム</label>
+                        <input type="text" id="platform" placeholder="AWS, Azure, GCP">
+                    </div>
+                    <div class="form-group">
+                        <label for="framework">フレームワーク</label>
+                        <input type="text" id="framework" placeholder="Spring, React, Vue">
+                    </div>
+                    <div class="form-group">
+                        <label for="db">データベース</label>
+                        <input type="text" id="db" placeholder="MySQL, PostgreSQL, Oracle">
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 10px 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">勤務条件</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="location">勤務地</label>
+                        <input type="text" id="location" placeholder="東京都渋谷区、大阪府大阪市等">
+                    </div>
+                    <div class="form-group">
+                        <label for="ken">都道府県</label>
+                        <input type="text" id="ken" placeholder="東京都、大阪府等">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="time_from">開始時間</label>
+                        <input type="time" id="time_from">
+                    </div>
+                    <div class="form-group">
+                        <label for="time_to">終了時間</label>
+                        <input type="time" id="time_to">
+                    </div>
+                    <div class="form-group">
+                        <label for="telework_yn">テレワーク <small style="color: #999; font-size: 10px;">(〇:フル △:部分 ✕:常駐)</small></label>
+                        <select id="telework_yn">
+                            <option value="">選択</option>
+                            <option value="0">✕</option>
+                            <option value="1">△</option>
+                            <option value="2">〇</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="persons">人数</label>
+                        <input type="text" id="persons" placeholder="2名、3-5名等">
+                    </div>
+                    <div class="form-group">
+                        <label for="foreigner">外国人可否</label>
+                        <select id="foreigner">
+                            <option value="">選択</option>
+                            <option value="可">可</option>
+                            <option value="不可">不可</option>
+                            <option value="要相談">要相談</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="telework">テレワーク詳細</label>
+                        <input type="text" id="telework" placeholder="週2-3日在宅等">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="price">価格</label>
-                    <input type="text" id="price" placeholder="¥1,000,000">
-                </div>
-                <div class="form-group">
-                    <label for="process">工程</label>
-                    <input type="text" id="process" placeholder="要件定義、設計、開発">
-                </div>
-                <div class="form-group">
-                    <label for="program">プログラム言語</label>
-                    <input type="text" id="program" placeholder="Java, Python, JavaScript">
-                </div>
-                
-                <div class="form-group">
-                    <label for="telework_yn">テレワーク <small style="color: #999; font-size: 10px;">(〇:フル △:部分 ✕:常駐)</small></label>
-                    <select id="telework_yn">
-                        <option value="0">✕</option>
-                        <option value="1">△</option>
-                        <option value="2">〇</option>
-                    </select>
+                    <label for="duplicate_check">重複チェック</label>
+                    <input type="text" id="duplicate_check" placeholder="類似案件との重複確認用">
                 </div>
                 
                 <div class="form-actions">
@@ -915,25 +1003,72 @@
                             <div style="margin-bottom: 10px;"><strong>案件名:</strong> ${anken.anken_name || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>連絡先:</strong> ${anken.contact_name || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>取引先:</strong> ${anken.account_name || '-'}</div>
-
                             <div style="margin-bottom: 10px;"><strong>価格:</strong> ${anken.price || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>契約形態:</strong> ${anken.contract || '-'}</div>
                         </div>
                         <div>
-                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">プロジェクト詳細</h4>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">期間</h4>
                             <div style="margin-bottom: 10px;"><strong>開始日:</strong> ${anken.start_date || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>終了日:</strong> ${anken.end_date || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>締切日:</strong> ${anken.limit_date || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>勤務時間:</strong> ${anken.time_from || '-'} ~ ${anken.time_to || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>人数:</strong> ${anken.persons || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">技術要件</h4>
                             <div style="margin-bottom: 10px;"><strong>工程:</strong> ${anken.process || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>プログラム言語:</strong> ${anken.program || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>プラットフォーム:</strong> ${anken.platform || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>フレームワーク:</strong> ${anken.framework || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>データベース:</strong> ${anken.db || '-'}</div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">勤務条件</h4>
+                            <div style="margin-bottom: 10px;"><strong>勤務地:</strong> ${anken.location || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>都道府県:</strong> ${anken.ken || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>テレワーク:</strong> 
                                 ${getTeleworkDisplay(anken.telework_yn)} <small style="color: #999; font-size: 10px;">(〇:フル △:部分 ✕:常駐)</small>
                             </div>
+                            <div style="margin-bottom: 10px;"><strong>テレワーク詳細:</strong> ${anken.telework || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>外国人可否:</strong> ${anken.foreigner || '-'}</div>
                         </div>
                     </div>
+                    
+                    ${anken.required_skills ? `
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">必須スキル</h4>
+                            <p style="line-height: 1.6; color: #666;">${anken.required_skills}</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${anken.nice_skills ? `
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">歓迎スキル</h4>
+                            <p style="line-height: 1.6; color: #666;">${anken.nice_skills}</p>
+                        </div>
+                    ` : ''}
                     
                     ${anken.detail ? `
                         <div style="margin-bottom: 20px;">
                             <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">詳細説明</h4>
                             <p style="line-height: 1.6; color: #666;">${anken.detail}</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${anken.notes ? `
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">備考</h4>
+                            <p style="line-height: 1.6; color: #666;">${anken.notes}</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${anken.duplicate_check ? `
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">重複チェック</h4>
+                            <p style="line-height: 1.6; color: #666;">${anken.duplicate_check}</p>
                         </div>
                     ` : ''}
                     
