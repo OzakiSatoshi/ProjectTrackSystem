@@ -90,29 +90,100 @@
             overflow: hidden;
         }
         
-        .table-container {
-            overflow-x: auto;
+        .anken-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .anken-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
         
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
+        .anken-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
         }
         
-        th {
-            background: #f8f9fa;
+        .anken-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .anken-title {
+            font-size: 18px;
             font-weight: 600;
             color: #2c3e50;
+            margin: 0;
+            line-height: 1.3;
         }
         
-        tr:hover {
-            background: #f8f9fa;
+        .anken-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+            margin-bottom: 16px;
+        }
+        
+        .anken-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .anken-info-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        
+        .anken-info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .anken-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .anken-tag {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            background: #f0f2f5;
+            color: #5a6c7d;
+        }
+        
+        .anken-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .anken-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .table-container {
+            display: none;
         }
         
         .status {
@@ -223,23 +294,28 @@
                 align-items: stretch;
             }
             
-            table {
-                font-size: 12px;
+            .anken-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 16px;
             }
             
-            th, td {
-                padding: 6px 4px;
+            .anken-card {
+                padding: 16px;
+            }
+            
+            .anken-title {
+                font-size: 16px;
+            }
+            
+            .anken-info {
+                grid-template-columns: 1fr;
+                gap: 8px;
             }
             
             .modal-content {
                 margin: 10% auto;
                 width: 95%;
-            }
-            
-            /* Hide some columns on mobile for better fit */
-            th:nth-child(4), td:nth-child(4), /* 工程 */
-            th:nth-child(5), td:nth-child(5) /* 言語 */ {
-                display: none;
             }
         }
     </style>
@@ -259,28 +335,10 @@
         </div>
         
         <div class="card">
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>案件名</th>
-                            <th>連絡先</th>
-                            <th>取引先</th>
-                            <th>工程</th>
-                            <th>言語</th>
-                            <th>作業場所</th>
-                            <th>テレワーク</th>
-                            <th>ステータス</th>
-                            <th>価格</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ankenTable">
-                        <tr>
-                            <td colspan="10" class="loading">読み込み中...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="ankenGrid" class="anken-grid">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                    読み込み中...
+                </div>
             </div>
         </div>
     </div>
@@ -433,11 +491,11 @@
             try {
                 const response = await fetch('/api/anken');
                 const anken = await response.json();
-                renderAnkenTable(anken);
+                renderAnkenCards(anken);
             } catch (error) {
                 console.error('Error loading anken:', error);
-                document.getElementById('ankenTable').innerHTML = 
-                    '<tr><td colspan="10" class="empty-state">データの読み込みに失敗しました</td></tr>';
+                document.getElementById('ankenGrid').innerHTML = 
+                    '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #e74c3c;">データの読み込みに失敗しました</div>';
             }
         }
         
@@ -461,40 +519,62 @@
             }
         }
         
-        function renderAnkenTable(anken) {
-            const tbody = document.getElementById('ankenTable');
+        function renderAnkenCards(anken) {
+            const grid = document.getElementById('ankenGrid');
             
             if (anken.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">案件がありません</td></tr>';
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">案件がありません</div>';
                 return;
             }
             
-            tbody.innerHTML = anken.map(item => `
-                <tr onclick="viewAnkenDetails('${item.anken_id}')" style="cursor: pointer;">
-                    <td>${item.anken_name || '-'}</td>
-                    <td>${item.contact_name || '-'}</td>
-                    <td>${item.account_name || '-'}</td>
-                    <td>${item.process || '-'}</td>
-                    <td>${item.program || '-'}</td>
-                    <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.location || '-'}">
-                        ${item.location || '-'}
-                    </td>
-                    <td>
-                        <span class="telework-status">
-                            ${item.telework_yn === 1 ? '可能' : item.telework_yn === 0 ? '不可' : '-'}
-                        </span>
-                    </td>
-                    <td>
+            grid.innerHTML = anken.map(item => `
+                <div class="anken-card" onclick="viewAnkenDetails('${item.anken_id}')">
+                    <div class="anken-header">
+                        <h3 class="anken-title">${item.anken_name || '無題'}</h3>
                         <span class="status status-${item.status_code || 1}">
                             ${getStatusLabel(item.status_code)}
                         </span>
-                    </td>
-                    <td>${item.price || '-'}</td>
-                    <td onclick="event.stopPropagation();">
-                        <button onclick="editAnken('${item.anken_id}')" class="secondary" style="font-size: 12px; padding: 5px 10px;">編集</button>
-                        <button onclick="deleteAnken('${item.anken_id}')" class="danger" style="font-size: 12px; padding: 5px 10px;">削除</button>
-                    </td>
-                </tr>
+                    </div>
+                    
+                    <div class="anken-info">
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">連絡先</span>
+                            <span class="anken-info-value">${item.contact_name || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">取引先</span>
+                            <span class="anken-info-value">${item.account_name || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">作業場所</span>
+                            <span class="anken-info-value">${item.location || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">価格</span>
+                            <span class="anken-info-value">${item.price || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">期間</span>
+                            <span class="anken-info-value">${item.start_date || '-'} ～ ${item.end_date || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">テレワーク</span>
+                            <span class="anken-info-value">${item.telework_yn === 1 ? '可能' : item.telework_yn === 0 ? '不可' : '-'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="anken-tags">
+                        ${item.process ? `<span class="anken-tag">📋 ${item.process}</span>` : ''}
+                        ${item.program ? `<span class="anken-tag">💻 ${item.program}</span>` : ''}
+                        ${item.platform ? `<span class="anken-tag">📱 ${item.platform}</span>` : ''}
+                        ${item.framework ? `<span class="anken-tag">🔧 ${item.framework}</span>` : ''}
+                    </div>
+                    
+                    <div class="anken-actions" onclick="event.stopPropagation();">
+                        <button onclick="editAnken('${item.anken_id}')" class="secondary">編集</button>
+                        <button onclick="deleteAnken('${item.anken_id}')" class="danger">削除</button>
+                    </div>
+                </div>
             `).join('');
         }
         
