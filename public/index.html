@@ -376,16 +376,7 @@
                         <label for="filterProcess">工程</label>
                         <input type="text" id="filterProcess" placeholder="設計, 開発..." onInput="applyFilters()">
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label for="filterStatus">ステータス</label>
-                        <select id="filterStatus" onchange="applyFilters()">
-                            <option value="">すべて</option>
-                            <option value="1">新規</option>
-                            <option value="2">進行中</option>
-                            <option value="3">完了</option>
-                            <option value="4">保留</option>
-                        </select>
-                    </div>
+
                     <div class="form-group" style="margin-bottom: 0;">
                         <label for="filterTelework">テレワーク</label>
                         <select id="filterTelework" onchange="applyFilters()">
@@ -433,15 +424,7 @@
                     <label for="detail">詳細</label>
                     <textarea id="detail" rows="3"></textarea>
                 </div>
-                <div class="form-group">
-                    <label for="status_code">ステータス</label>
-                    <select id="status_code">
-                        <option value="1">新規</option>
-                        <option value="2">進行中</option>
-                        <option value="3">完了</option>
-                        <option value="4">保留</option>
-                    </select>
-                </div>
+
                 <div class="form-group">
                     <label for="start_date">開始日</label>
                     <input type="date" id="start_date">
@@ -600,9 +583,6 @@
                 <div class="anken-card" onclick="viewAnkenDetails('${item.anken_id}')">
                     <div class="anken-header">
                         <h3 class="anken-title">${item.anken_name || '無題'}</h3>
-                        <span class="status status-${item.status_code || 1}">
-                            ${getStatusLabel(item.status_code)}
-                        </span>
                     </div>
                     
                     <div class="anken-info">
@@ -694,7 +674,7 @@
                 anken_name: document.getElementById('anken_name').value,
                 contact_id: document.getElementById('contact_id').value || null,
                 detail: document.getElementById('detail').value,
-                status_code: parseInt(document.getElementById('status_code').value),
+
                 start_date: document.getElementById('start_date').value,
                 end_date: document.getElementById('end_date').value,
                 price: document.getElementById('price').value,
@@ -791,7 +771,7 @@
                 document.getElementById('anken_name').value = anken.anken_name || '';
                 document.getElementById('contact_id').value = anken.contact_id || '';
                 document.getElementById('detail').value = anken.detail || '';
-                document.getElementById('status_code').value = anken.status_code || 1;
+
                 document.getElementById('start_date').value = anken.start_date || '';
                 document.getElementById('end_date').value = anken.end_date || '';
                 document.getElementById('price').value = anken.price || '';
@@ -839,11 +819,7 @@
                             <div style="margin-bottom: 10px;"><strong>案件名:</strong> ${anken.anken_name || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>連絡先:</strong> ${anken.contact_name || '-'}</div>
                             <div style="margin-bottom: 10px;"><strong>取引先:</strong> ${anken.account_name || '-'}</div>
-                            <div style="margin-bottom: 10px;"><strong>ステータス:</strong> 
-                                <span class="status status-${anken.status_code || 1}">
-                                    ${getStatusLabel(anken.status_code)}
-                                </span>
-                            </div>
+
                             <div style="margin-bottom: 10px;"><strong>価格:</strong> ${anken.price || '-'}</div>
                         </div>
                         <div>
@@ -882,7 +858,6 @@
                                 ${anken.time_from && anken.time_to ? `${anken.time_from} - ${anken.time_to}` : '-'}
                             </div>
                             <div style="margin-bottom: 10px;"><strong>契約:</strong> ${anken.contract || '-'}</div>
-                            <div style="margin-bottom: 10px;"><strong>ミーティング:</strong> ${anken.meeting || '-'}</div>
                         </div>
                     </div>
                     
@@ -908,7 +883,7 @@
             const filterProgram = document.getElementById('filterProgram').value.toLowerCase();
             const filterPlatform = document.getElementById('filterPlatform').value.toLowerCase();
             const filterProcess = document.getElementById('filterProcess').value.toLowerCase();
-            const filterStatus = document.getElementById('filterStatus').value;
+
             const filterTelework = document.getElementById('filterTelework').value;
             
             const filteredAnken = allAnken.filter(item => {
@@ -936,16 +911,12 @@
                 const processMatch = !filterProcess || 
                     (item.process && item.process.toLowerCase().includes(filterProcess));
                 
-                // Status filter
-                const statusMatch = !filterStatus || 
-                    item.status_code === parseInt(filterStatus);
-                
                 // Telework filter
                 const teleworkMatch = !filterTelework || 
                     item.telework_yn === parseInt(filterTelework);
                 
                 return textMatch && locationMatch && kenMatch && programMatch && 
-                       platformMatch && processMatch && statusMatch && teleworkMatch;
+                       platformMatch && processMatch && teleworkMatch;
             });
             
             renderAnkenCards(filteredAnken);
@@ -959,7 +930,6 @@
             document.getElementById('filterProgram').value = '';
             document.getElementById('filterPlatform').value = '';
             document.getElementById('filterProcess').value = '';
-            document.getElementById('filterStatus').value = '';
             document.getElementById('filterTelework').value = '';
             applyFilters();
         }

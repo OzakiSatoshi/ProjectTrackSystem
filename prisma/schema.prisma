@@ -33,11 +33,11 @@ model Anken {
   notes        String?   @db.Text
   start_date   String?   @db.Text
   end_date     String?   @db.Text
-  status_code  Int?
+
   price        String?   @db.Text
   limit_date   String?   @db.Text
   contract     String?   @db.Text
-  meeting      String?   @db.Text
+
   foreigner    String?   @db.Text
   telework     String?   @db.Text
   telework_yn  Int?
