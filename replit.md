@@ -22,11 +22,11 @@ This is a full-stack project management application built for managing "anken" (
 - **Development**: Hot reload with Vite middleware integration
 
 ### Data Storage Solutions
-- **Database**: PostgreSQL (configured via Drizzle)
-- **ORM**: Drizzle ORM with type-safe queries
-- **Schema Management**: Drizzle Kit for migrations
-- **Connection**: Neon serverless PostgreSQL adapter
-- **Development Storage**: In-memory storage (MemStorage) for development/testing
+- **Database**: PostgreSQL with relational schema
+- **ORM**: Prisma ORM with type-safe queries and relations
+- **Schema Management**: Prisma schema with foreign key relationships
+- **Tables**: accounts, contacts, anken with proper relational mapping
+- **API Integration**: Automatic inclusion of related data (contact_name, account_name)
 
 ## Key Components
 
@@ -102,7 +102,13 @@ The core entity is `anken` (project) with comprehensive fields:
 - **Environment**: Requires `DATABASE_URL` for PostgreSQL connection
 
 ## Changelog
-- June 24, 2025. Initial setup
+- June 24, 2025: Converted to Prisma-based relational system
+  - Implemented PostgreSQL with Prisma ORM
+  - Added accounts, contacts, and anken tables with foreign key relationships
+  - Created RESTful APIs for all entities with relational data
+  - Built HTML/JS frontend for managing opportunities with linked contacts and accounts
+  - Added Docker support for portable deployment
+- June 24, 2025: Initial setup
 
 ## User Preferences
 
