@@ -121,3 +121,6 @@ The core entity is `anken` (project) with comprehensive fields:
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Japanese business conventions: Surname first, given name second in contact forms.
+Data structure: Email addresses belong to contacts, not accounts (companies).
+Form simplification: Remove unnecessary fields like salutation and duplicate company name fields.

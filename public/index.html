@@ -479,30 +479,19 @@
                     </select>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px;">
-                    <div class="form-group">
-                        <label for="salutation">敬称</label>
-                        <select id="salutation">
-                            <option value="">選択</option>
-                            <option value="Mr.">Mr.</option>
-                            <option value="Ms.">Ms.</option>
-                            <option value="Dr.">Dr.</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="contact_name">連絡先名 *</label>
-                        <input type="text" id="contact_name" required placeholder="山田 太郎">
-                    </div>
+                <div class="form-group">
+                    <label for="contact_name">連絡先名 *</label>
+                    <input type="text" id="contact_name" required placeholder="山田 太郎">
                 </div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
-                        <label for="firstname">名</label>
-                        <input type="text" id="firstname" placeholder="太郎">
-                    </div>
-                    <div class="form-group">
                         <label for="lastname">姓</label>
                         <input type="text" id="lastname" placeholder="山田">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname">名</label>
+                        <input type="text" id="firstname" placeholder="太郎">
                     </div>
                 </div>
                 
@@ -517,10 +506,7 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="company">会社名</label>
-                    <input type="text" id="company" placeholder="所属会社（取引先と異なる場合）">
-                </div>
+
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
@@ -809,7 +795,17 @@
             
             const data = {
                 contact_name: document.getElementById('contact_name').value,
-                account_id: document.getElementById('account_id').value
+                account_id: document.getElementById('account_id').value,
+                firstname: document.getElementById('firstname').value,
+                lastname: document.getElementById('lastname').value,
+                fullname: document.getElementById('contact_name').value,
+                jobtitle: document.getElementById('jobtitle').value,
+                department: document.getElementById('department').value,
+                telephone1: document.getElementById('telephone1').value,
+                mobilephone: document.getElementById('mobilephone').value,
+                email_address1: document.getElementById('email_address1').value,
+                address1_line1: document.getElementById('address1_line1').value,
+                description: document.getElementById('description').value
             };
             
             try {
