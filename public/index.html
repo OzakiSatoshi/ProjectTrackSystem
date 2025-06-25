@@ -341,7 +341,9 @@
             <button onclick="loadData()" class="secondary">更新</button>
         </div>
         
-        <!-- Search and Filter Panel -->
+        <!-- Anken Section -->
+        <div id="ankenSection" class="section">
+            <!-- Search and Filter Panel -->
         <div class="card" style="margin-bottom: 20px;">
             <div style="padding: 20px;">
                 <h3 style="margin: 0 0 15px 0; color: #2c3e50;">検索・フィルター</h3>
@@ -949,13 +951,17 @@
                             closeModal('contactModal');
                             document.getElementById('contactForm').reset();
                             loadContacts();
-                            loadContactsList(); // Refresh contacts list if visible
+                            if (document.getElementById('contactsSection').style.display !== 'none') {
+                                loadContactsList(); // Refresh contacts list if visible
+                            }
                         }
                     } else {
                         closeModal('contactModal');
                         document.getElementById('contactForm').reset();
                         loadContacts();
-                        loadContactsList(); // Refresh contacts list if visible
+                        if (document.getElementById('contactsSection').style.display !== 'none') {
+                            loadContactsList(); // Refresh contacts list if visible
+                        }
                     }
                 } else {
                     alert('保存に失敗しました');
@@ -1036,7 +1042,9 @@
                 
                 if (response.ok) {
                     loadContacts();
-                    loadContactsList();
+                    if (document.getElementById('contactsSection').style.display !== 'none') {
+                        loadContactsList();
+                    }
                 } else {
                     alert('削除に失敗しました');
                 }
@@ -1063,7 +1071,9 @@
                 
                 if (response.ok) {
                     loadAccounts();
-                    loadAccountsList();
+                    if (document.getElementById('accountsSection').style.display !== 'none') {
+                        loadAccountsList();
+                    }
                 } else {
                     alert('削除に失敗しました');
                 }
