@@ -771,10 +771,23 @@
             if (contactsSection) contactsSection.style.display = 'none';
             if (accountsSection) accountsSection.style.display = 'none';
             
-            // Show selected section
+            // Remove active class from all navigation buttons
+            const ankenBtn = document.getElementById('ankenBtn');
+            const contactsBtn = document.getElementById('contactsBtn');
+            const accountsBtn = document.getElementById('accountsBtn');
+            
+            if (ankenBtn) ankenBtn.classList.remove('active');
+            if (contactsBtn) contactsBtn.classList.remove('active');
+            if (accountsBtn) accountsBtn.classList.remove('active');
+            
+            // Show selected section and activate corresponding button
             const targetSection = document.getElementById(sectionName + 'Section');
             if (targetSection) {
                 targetSection.style.display = 'block';
+                
+                // Add active class to the corresponding button
+                const activeBtn = document.getElementById(sectionName + 'Btn');
+                if (activeBtn) activeBtn.classList.add('active');
                 
                 // Load data for the section
                 if (sectionName === 'anken') {
