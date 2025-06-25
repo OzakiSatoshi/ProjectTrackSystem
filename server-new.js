@@ -231,6 +231,46 @@ app.delete('/api/anken/:id', async (req, res) => {
   }
 });
 
+// Delete contact
+app.delete('/api/contacts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.contact.delete({
+      where: { contact_id: id }
+    });
+    res.json({ message: 'Contact deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting contact:', error);
+    res.status(500).json({ error: 'Failed to delete contact' });
+  }
+});
+
+// Delete account
+app.delete('/api/accounts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // First check if account has any contacts
+    const contactCount = await prisma.contact.count({
+      where: { account_id: id }
+    });
+    
+    if (contactCount > 0) {
+      return res.status(400).json({ 
+        error: 'この取引先には担当者が登録されています。先に担当者を削除してください。' 
+      });
+    }
+    
+    await prisma.account.delete({
+      where: { account_id: id }
+    });
+    res.json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    res.status(500).json({ error: 'Failed to delete account' });
+  }
+});
+
 // Serve main page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
