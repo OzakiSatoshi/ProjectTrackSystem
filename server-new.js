@@ -34,6 +34,28 @@ app.get('/api/accounts', async (req, res) => {
   }
 });
 
+// Get single account by ID
+app.get('/api/accounts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const account = await prisma.account.findUnique({
+      where: { account_id: id },
+      include: {
+        contacts: true
+      }
+    });
+    
+    if (!account) {
+      return res.status(404).json({ error: 'Account not found' });
+    }
+    
+    res.json(account);
+  } catch (error) {
+    console.error('Error fetching account:', error);
+    res.status(500).json({ error: 'Failed to fetch account' });
+  }
+});
+
 // Create account
 app.post('/api/accounts', async (req, res) => {
   try {
