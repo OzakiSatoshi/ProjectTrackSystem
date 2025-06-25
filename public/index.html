@@ -334,9 +334,10 @@
         </header>
         
         <div class="actions">
-            <button onclick="openModal('ankenModal')">新規案件作成</button>
-            <button onclick="openModal('contactModal')" class="secondary">連絡先追加</button>
-            <button onclick="openModal('accountModal')" class="secondary">取引先追加</button>
+            <button onclick="showSection('anken')">案件一覧</button>
+            <button onclick="showSection('contacts')" class="secondary">担当者一覧</button>
+            <button onclick="showSection('accounts')" class="secondary">取引先一覧</button>
+            <button onclick="openModal('ankenModal')" class="secondary">新規案件作成</button>
             <button onclick="loadData()" class="secondary">更新</button>
         </div>
         
@@ -703,6 +704,25 @@
             document.getElementById('accountForm').addEventListener('submit', handleAccountSubmit);
         }
         
+        function showSection(sectionName) {
+            // Hide all sections
+            document.getElementById('ankenSection').style.display = 'none';
+            document.getElementById('contactsSection').style.display = 'none';
+            document.getElementById('accountsSection').style.display = 'none';
+            
+            // Show selected section
+            document.getElementById(sectionName + 'Section').style.display = 'block';
+            
+            // Load data for the section
+            if (sectionName === 'anken') {
+                loadAnken();
+            } else if (sectionName === 'contacts') {
+                loadContactsList();
+            } else if (sectionName === 'accounts') {
+                loadAccountsList();
+            }
+        }
+
         async function loadData() {
             await Promise.all([
                 loadAnken(),
@@ -929,11 +949,13 @@
                             closeModal('contactModal');
                             document.getElementById('contactForm').reset();
                             loadContacts();
+                            loadContactsList(); // Refresh contacts list if visible
                         }
                     } else {
                         closeModal('contactModal');
                         document.getElementById('contactForm').reset();
                         loadContacts();
+                        loadContactsList(); // Refresh contacts list if visible
                     }
                 } else {
                     alert('保存に失敗しました');
@@ -994,6 +1016,60 @@
             } catch (error) {
                 console.error('Error loading anken for edit:', error);
                 alert('案件の読み込みに失敗しました');
+            }
+        }
+
+        async function editContact(contactId) {
+            // Implementation for editing contacts
+            console.log('Edit contact:', contactId);
+        }
+
+        async function deleteContact(contactId) {
+            if (!confirm('この担当者を削除しますか？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/contacts/${contactId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadContacts();
+                    loadContactsList();
+                } else {
+                    alert('削除に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error deleting contact:', error);
+                alert('削除に失敗しました');
+            }
+        }
+
+        async function editAccount(accountId) {
+            // Implementation for editing accounts
+            console.log('Edit account:', accountId);
+        }
+
+        async function deleteAccount(accountId) {
+            if (!confirm('この取引先を削除しますか？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/accounts/${accountId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadAccounts();
+                    loadAccountsList();
+                } else {
+                    alert('削除に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                alert('削除に失敗しました');
             }
         }
         
