@@ -85,6 +85,28 @@ app.get('/api/contacts', async (req, res) => {
   }
 });
 
+// Get single contact by ID
+app.get('/api/contacts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const contact = await prisma.contact.findUnique({
+      where: { contact_id: id },
+      include: {
+        account: true
+      }
+    });
+    
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact not found' });
+    }
+    
+    res.json(contact);
+  } catch (error) {
+    console.error('Error fetching contact:', error);
+    res.status(500).json({ error: 'Failed to fetch contact' });
+  }
+});
+
 // Create contact
 app.post('/api/contacts', async (req, res) => {
   try {
