@@ -404,6 +404,61 @@
                 </div>
             </div>
         </div>
+        </div>
+
+        <!-- Contacts Section -->
+        <div id="contactsSection" class="section" style="display: none;">
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="padding: 20px;">
+                    <h3 style="margin: 0 0 15px 0; color: #2c3e50;">担当者一覧</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="contactSearchText">氏名・役職</label>
+                            <input type="text" id="contactSearchText" placeholder="キーワードで検索..." onInput="applyContactFilters()">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="contactAccountFilter">取引先</label>
+                            <select id="contactAccountFilter" onchange="applyContactFilters()">
+                                <option value="">すべて</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <button onclick="openModal('contactModal')" class="secondary">担当者追加</button>
+                    </div>
+                </div>
+            </div>
+            <div id="contactsGrid" class="anken-grid">
+                <!-- Contacts will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Accounts Section -->
+        <div id="accountsSection" class="section" style="display: none;">
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="padding: 20px;">
+                    <h3 style="margin: 0 0 15px 0; color: #2c3e50;">取引先一覧</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="accountSearchText">会社名・業界</label>
+                            <input type="text" id="accountSearchText" placeholder="キーワードで検索..." onInput="applyAccountFilters()">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="industryFilter">業界</label>
+                            <select id="industryFilter" onchange="applyAccountFilters()">
+                                <option value="">すべて</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <button onclick="openModal('accountModal')" class="secondary">取引先追加</button>
+                    </div>
+                </div>
+            </div>
+            <div id="accountsGrid" class="anken-grid">
+                <!-- Accounts will be loaded here -->
+            </div>
+        </div>
     </div>
 
     <!-- Anken Modal -->
@@ -708,20 +763,27 @@
         
         function showSection(sectionName) {
             // Hide all sections
-            document.getElementById('ankenSection').style.display = 'none';
-            document.getElementById('contactsSection').style.display = 'none';
-            document.getElementById('accountsSection').style.display = 'none';
+            const ankenSection = document.getElementById('ankenSection');
+            const contactsSection = document.getElementById('contactsSection');
+            const accountsSection = document.getElementById('accountsSection');
+            
+            if (ankenSection) ankenSection.style.display = 'none';
+            if (contactsSection) contactsSection.style.display = 'none';
+            if (accountsSection) accountsSection.style.display = 'none';
             
             // Show selected section
-            document.getElementById(sectionName + 'Section').style.display = 'block';
-            
-            // Load data for the section
-            if (sectionName === 'anken') {
-                loadAnken();
-            } else if (sectionName === 'contacts') {
-                loadContactsList();
-            } else if (sectionName === 'accounts') {
-                loadAccountsList();
+            const targetSection = document.getElementById(sectionName + 'Section');
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                
+                // Load data for the section
+                if (sectionName === 'anken') {
+                    loadAnken();
+                } else if (sectionName === 'contacts') {
+                    loadContactsList();
+                } else if (sectionName === 'accounts') {
+                    loadAccountsList();
+                }
             }
         }
 
@@ -951,7 +1013,8 @@
                             closeModal('contactModal');
                             document.getElementById('contactForm').reset();
                             loadContacts();
-                            if (document.getElementById('contactsSection').style.display !== 'none') {
+                            const contactsSection = document.getElementById('contactsSection');
+                            if (contactsSection && contactsSection.style.display !== 'none') {
                                 loadContactsList(); // Refresh contacts list if visible
                             }
                         }
@@ -959,7 +1022,8 @@
                         closeModal('contactModal');
                         document.getElementById('contactForm').reset();
                         loadContacts();
-                        if (document.getElementById('contactsSection').style.display !== 'none') {
+                        const contactsSection = document.getElementById('contactsSection');
+                        if (contactsSection && contactsSection.style.display !== 'none') {
                             loadContactsList(); // Refresh contacts list if visible
                         }
                     }
@@ -1042,7 +1106,8 @@
                 
                 if (response.ok) {
                     loadContacts();
-                    if (document.getElementById('contactsSection').style.display !== 'none') {
+                    const contactsSection = document.getElementById('contactsSection');
+                    if (contactsSection && contactsSection.style.display !== 'none') {
                         loadContactsList();
                     }
                 } else {
@@ -1071,7 +1136,8 @@
                 
                 if (response.ok) {
                     loadAccounts();
-                    if (document.getElementById('accountsSection').style.display !== 'none') {
+                    const accountsSection = document.getElementById('accountsSection');
+                    if (accountsSection && accountsSection.style.display !== 'none') {
                         loadAccountsList();
                     }
                 } else {
