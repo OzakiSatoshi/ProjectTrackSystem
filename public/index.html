@@ -925,17 +925,21 @@
                 });
             }
             
-            // Populate contact account filter
+            // Populate both account filters with account names
+            const accountFilter = document.getElementById('accountFilter');
             const contactAccountFilter = document.getElementById('contactAccountFilter');
-            if (contactAccountFilter) {
-                contactAccountFilter.innerHTML = '<option value="">すべて</option>';
-                accounts.forEach(account => {
-                    const option = document.createElement('option');
-                    option.value = account.account_name;
-                    option.textContent = account.account_name;
-                    contactAccountFilter.appendChild(option);
-                });
-            }
+            
+            [accountFilter, contactAccountFilter].forEach(filterElement => {
+                if (filterElement) {
+                    filterElement.innerHTML = '<option value="">すべて</option>';
+                    accounts.forEach(account => {
+                        const option = document.createElement('option');
+                        option.value = account.account_name;
+                        option.textContent = account.account_name;
+                        filterElement.appendChild(option);
+                    });
+                }
+            });
         }
         
         function populateContactSelect(contacts) {
@@ -1471,8 +1475,8 @@
             const filterProgram = document.getElementById('filterProgram').value.toLowerCase();
             const filterPlatform = document.getElementById('filterPlatform').value.toLowerCase();
             const filterProcess = document.getElementById('filterProcess').value.toLowerCase();
-
             const filterTelework = document.getElementById('filterTelework').value;
+            const accountFilter = document.getElementById('accountFilter').value;
             
             const filteredAnken = allAnken.filter(item => {
                 // Text search in name and detail
@@ -1505,8 +1509,12 @@
                     (filterTelework === 'partial' && item.telework_yn === 1) ||
                     (filterTelework === 'none' && item.telework_yn === 0);
                 
+                // Account filter - match by account name like contacts
+                const accountMatch = !accountFilter || 
+                    (item.account_name && item.account_name === accountFilter);
+                
                 return textMatch && locationMatch && kenMatch && programMatch && 
-                       platformMatch && processMatch && teleworkMatch;
+                       platformMatch && processMatch && teleworkMatch && accountMatch;
             });
             
             renderAnkenCards(filteredAnken);
@@ -1540,6 +1548,36 @@
                 e.target.style.display = 'none';
             }
         });
+        
+        async function loadAccountFilters() {
+            try {
+                const response = await fetch('/api/accounts');
+                const accounts = await response.json();
+                
+                // Update both account filter dropdowns with account names
+                const accountFilter = document.getElementById('accountFilter');
+                const contactAccountFilter = document.getElementById('contactAccountFilter');
+                
+                [accountFilter, contactAccountFilter].forEach(filterElement => {
+                    if (filterElement) {
+                        // Clear existing options except "すべて"
+                        while (filterElement.children.length > 1) {
+                            filterElement.removeChild(filterElement.lastChild);
+                        }
+                        
+                        // Add account options using account names
+                        accounts.forEach(account => {
+                            const option = document.createElement('option');
+                            option.value = account.account_name;
+                            option.textContent = account.account_name;
+                            filterElement.appendChild(option);
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading account filters:', error);
+            }
+        }
     </script>
 </body>
 </html>
