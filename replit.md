@@ -85,6 +85,14 @@ The core entity is `anken` (project) with comprehensive fields:
 - **Port**: 5000 (configured for Replit)
 - **Features**: Hot reload, Vite middleware, development middleware
 
+### Docker Deployment
+- **Container**: Node.js 20 Alpine with PostgreSQL client
+- **Database**: PostgreSQL 15 Alpine with persistent volumes
+- **Port**: 5000 (configurable)
+- **Auto-startup**: Health checks and dependency management
+- **Migration**: Automatic Prisma migration on container start
+- **Environment**: Self-contained with docker-compose.yml
+
 ### Production Build
 - **Frontend Build**: `vite build` - Creates optimized static assets
 - **Backend Build**: `esbuild` - Bundles server code with external packages
@@ -92,16 +100,23 @@ The core entity is `anken` (project) with comprehensive fields:
 
 ### Database Setup
 - **Development**: Uses MemStorage for quick iteration
-- **Production**: PostgreSQL via Neon serverless with Drizzle migrations
-- **Migration Command**: `npm run db:push`
+- **Production**: PostgreSQL via Docker container with persistent volumes
+- **Migration Command**: `npx prisma migrate deploy` (auto-executed)
 
 ### Deployment Configuration
-- **Target**: Autoscale deployment on Replit
-- **Build Command**: `npm run build`
-- **Start Command**: `npm run start`
-- **Environment**: Requires `DATABASE_URL` for PostgreSQL connection
+- **Target**: Personal VPS with Docker support (portable, no vendor lock-in)
+- **Build Command**: `docker-compose up -d`
+- **Start Command**: Automatic via Docker entrypoint
+- **Environment**: Self-contained PostgreSQL database in Docker
+- **Backup**: Standard PostgreSQL dump/restore commands
 
 ## Changelog
+- June 25, 2025: Implemented Docker deployment configuration
+  - Added Docker and docker-compose.yml for portable VPS deployment
+  - Created automated database migration on container startup
+  - Implemented auto-generated account numbers (no manual input required)
+  - Added click-to-view detail modals for contacts and accounts
+  - Removed industry filter from accounts list as requested
 - June 25, 2025: Changed anken price field to string type and updated UI labels from "価格" to "単価"
 - June 24, 2025: Enhanced database schema based on real account data
   - Expanded Account model with comprehensive business fields (address, contact info, industry, revenue)
