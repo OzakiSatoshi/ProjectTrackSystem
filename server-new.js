@@ -95,7 +95,7 @@ app.get('/api/anken', async (req, res) => {
         }
       },
       orderBy: {
-        created_at: 'desc'
+        anken_id: 'desc'
       }
     });
     
