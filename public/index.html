@@ -889,6 +889,31 @@
                 accounts.map(account => 
                     `<option value="${account.account_id}">${account.account_name}</option>`
                 ).join('');
+                
+            // Also populate industry filter for accounts section
+            const industryFilter = document.getElementById('industryFilter');
+            if (industryFilter) {
+                industryFilter.innerHTML = '<option value="">すべて</option>';
+                const uniqueIndustries = [...new Set(accounts.map(a => a.industry_code).filter(Boolean))];
+                uniqueIndustries.forEach(industry => {
+                    const option = document.createElement('option');
+                    option.value = industry;
+                    option.textContent = industry;
+                    industryFilter.appendChild(option);
+                });
+            }
+            
+            // Populate contact account filter
+            const contactAccountFilter = document.getElementById('contactAccountFilter');
+            if (contactAccountFilter) {
+                contactAccountFilter.innerHTML = '<option value="">すべて</option>';
+                accounts.forEach(account => {
+                    const option = document.createElement('option');
+                    option.value = account.account_name;
+                    option.textContent = account.account_name;
+                    contactAccountFilter.appendChild(option);
+                });
+            }
         }
         
         function populateContactSelect(contacts) {
@@ -897,6 +922,170 @@
                 contacts.map(contact => 
                     `<option value="${contact.contact_id}">${contact.contact_name} (${contact.account?.account_name || '所属なし'})</option>`
                 ).join('');
+        }
+
+        async function loadContactsList() {
+            try {
+                const response = await fetch('/api/contacts');
+                const contacts = await response.json();
+                displayContacts(contacts);
+            } catch (error) {
+                console.error('Error loading contacts list:', error);
+                const contactsGrid = document.getElementById('contactsGrid');
+                if (contactsGrid) {
+                    contactsGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">担当者の読み込みに失敗しました</div>';
+                }
+            }
+        }
+
+        function displayContacts(contacts) {
+            const grid = document.getElementById('contactsGrid');
+            if (!grid) return;
+            
+            if (contacts.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">担当者がありません</div>';
+                return;
+            }
+            
+            grid.innerHTML = contacts.map(contact => `
+                <div class="anken-card">
+                    <div class="anken-header">
+                        <h3 class="anken-title">${contact.contact_name || '-'}</h3>
+                    </div>
+                    <div class="anken-info">
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">取引先</span>
+                            <span class="anken-info-value">${contact.account?.account_name || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">役職</span>
+                            <span class="anken-info-value">${contact.jobtitle || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">部署</span>
+                            <span class="anken-info-value">${contact.department || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">電話</span>
+                            <span class="anken-info-value">${contact.telephone1 || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">メール</span>
+                            <span class="anken-info-value">${contact.email_address1 || '-'}</span>
+                        </div>
+                    </div>
+                    <div class="anken-actions">
+                        <button onclick="editContact('${contact.contact_id}')" class="secondary">編集</button>
+                        <button onclick="deleteContact('${contact.contact_id}')" class="danger">削除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyContactFilters() {
+            const searchText = document.getElementById('contactSearchText')?.value.toLowerCase() || '';
+            const accountFilter = document.getElementById('contactAccountFilter')?.value || '';
+            
+            // Get contacts data and filter
+            fetch('/api/contacts')
+                .then(response => response.json())
+                .then(allContacts => {
+                    const filtered = allContacts.filter(contact => {
+                        const matchesSearch = !searchText || 
+                            (contact.contact_name && contact.contact_name.toLowerCase().includes(searchText)) ||
+                            (contact.jobtitle && contact.jobtitle.toLowerCase().includes(searchText)) ||
+                            (contact.department && contact.department.toLowerCase().includes(searchText));
+                        
+                        const matchesAccount = !accountFilter || (contact.account && contact.account.account_name === accountFilter);
+                        
+                        return matchesSearch && matchesAccount;
+                    });
+                    
+                    displayContacts(filtered);
+                })
+                .catch(error => console.error('Error filtering contacts:', error));
+        }
+
+        async function loadAccountsList() {
+            try {
+                const response = await fetch('/api/accounts');
+                const accounts = await response.json();
+                displayAccounts(accounts);
+            } catch (error) {
+                console.error('Error loading accounts list:', error);
+                const accountsGrid = document.getElementById('accountsGrid');
+                if (accountsGrid) {
+                    accountsGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">取引先の読み込みに失敗しました</div>';
+                }
+            }
+        }
+
+        function displayAccounts(accounts) {
+            const grid = document.getElementById('accountsGrid');
+            if (!grid) return;
+            
+            if (accounts.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">取引先がありません</div>';
+                return;
+            }
+            
+            grid.innerHTML = accounts.map(account => `
+                <div class="anken-card">
+                    <div class="anken-header">
+                        <h3 class="anken-title">${account.account_name || '-'}</h3>
+                    </div>
+                    <div class="anken-info">
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">業界</span>
+                            <span class="anken-info-value">${account.industry_code || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">電話</span>
+                            <span class="anken-info-value">${account.telephone1 || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">住所</span>
+                            <span class="anken-info-value">${account.address1_line1 || '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">ウェブサイト</span>
+                            <span class="anken-info-value">${account.website_url ? `<a href="${account.website_url}" target="_blank">${account.website_url}</a>` : '-'}</span>
+                        </div>
+                        <div class="anken-info-item">
+                            <span class="anken-info-label">説明</span>
+                            <span class="anken-info-value">${account.description || '-'}</span>
+                        </div>
+                    </div>
+                    <div class="anken-actions">
+                        <button onclick="editAccount('${account.account_id}')" class="secondary">編集</button>
+                        <button onclick="deleteAccount('${account.account_id}')" class="danger">削除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyAccountFilters() {
+            const searchText = document.getElementById('accountSearchText')?.value.toLowerCase() || '';
+            const industryFilter = document.getElementById('industryFilter')?.value || '';
+            
+            // Get accounts data and filter
+            fetch('/api/accounts')
+                .then(response => response.json())
+                .then(allAccounts => {
+                    const filtered = allAccounts.filter(account => {
+                        const matchesSearch = !searchText || 
+                            (account.account_name && account.account_name.toLowerCase().includes(searchText)) ||
+                            (account.industry_code && account.industry_code.toLowerCase().includes(searchText)) ||
+                            (account.description && account.description.toLowerCase().includes(searchText));
+                        
+                        const matchesIndustry = !industryFilter || account.industry_code === industryFilter;
+                        
+                        return matchesSearch && matchesIndustry;
+                    });
+                    
+                    displayAccounts(filtered);
+                })
+                .catch(error => console.error('Error filtering accounts:', error));
         }
         
         function getTeleworkDisplay(teleworkYn) {
