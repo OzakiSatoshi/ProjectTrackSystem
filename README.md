@@ -1,103 +1,117 @@
-# 案件管理システム (Project Management System)
+以下が日本語訳です：
 
-A portable business management system for managing opportunities (案件) with linked contacts and accounts using Node.js, Express, PostgreSQL, and Prisma ORM.
+---
 
-## Features
+# 案件管理システム（Project Management System）
 
-- **Relational Data Management**: Manage accounts, contacts, and opportunities with proper foreign key relationships
-- **RESTful API**: Complete CRUD operations for all entities
-- **Web Interface**: Simple HTML/JavaScript frontend for data management
-- **Portable**: No vendor-specific dependencies, runs on any VPS with Docker
-- **PostgreSQL**: Production-ready relational database with Prisma ORM
+Node.js、Express、PostgreSQL、Prisma ORM を使用した、取引先・連絡先と紐づいた案件（オポチュニティ）を管理するためのポータブルな業務管理システムです。
 
-## Database Schema
+## 特長
+
+* **リレーショナルデータ管理**：取引先・連絡先・案件を外部キーで正しく関連付けて管理
+* **RESTful API**：すべてのエンティティに対する完全な CRUD 操作を提供
+* **Web インターフェース**：シンプルな HTML/JavaScript フロントエンドでデータを操作可能
+* **ポータブル**：ベンダー固有の依存なし。Docker で任意の VPS 上で動作
+* **PostgreSQL 使用**：Prisma ORM を使用した本番環境対応のリレーショナルデータベース
+
+## データベーススキーマ
 
 ```sql
--- Accounts (取引先)
+-- 取引先（Accounts）
 CREATE TABLE accounts (
   account_id UUID PRIMARY KEY,
   account_name TEXT NOT NULL
 );
 
--- Contacts (連絡先)
+-- 連絡先（Contacts）
 CREATE TABLE contacts (
   contact_id UUID PRIMARY KEY,
   contact_name TEXT NOT NULL,
   account_id UUID REFERENCES accounts(account_id)
 );
 
--- Opportunities (案件)
+-- 案件（Opportunities）
 CREATE TABLE anken (
   anken_id UUID PRIMARY KEY,
   anken_name TEXT NOT NULL,
   contact_id UUID REFERENCES contacts(contact_id),
-  -- Additional fields...
+  -- 追加項目...
   created_at DATE,
   updated_at TIMESTAMP
 );
 ```
 
-## Quick Start with Docker
+## Docker によるクイックスタート
 
-1. **Clone and start with Docker Compose:**
+1. **リポジトリをクローンして Docker Compose で起動：**
+
    ```bash
    git clone <repository>
    cd anken-management
    docker-compose up -d
    ```
 
-2. **Access the application:**
-   - Web Interface: http://localhost:3000
-   - API: http://localhost:3000/api/
+2. **アプリケーションにアクセス：**
 
-## Local Development Setup
+   * Web インターフェース: [http://localhost:3000](http://localhost:3000)
+   * API: [http://localhost:3000/api/](http://localhost:3000/api/)
 
-1. **Prerequisites:**
-   - Node.js 18+
-   - PostgreSQL 12+
+## ローカル開発環境のセットアップ
 
-2. **Install dependencies:**
+1. **前提条件：**
+
+   * Node.js 18 以上
+   * PostgreSQL 12 以上
+
+2. **依存関係のインストール：**
+
    ```bash
    npm install
    ```
 
-3. **Setup environment:**
+3. **環境変数の設定：**
+
    ```bash
    cp .env.example .env
-   # Edit .env with your database URL
+   # .env を開いて、データベース URL を記述
    ```
 
-4. **Setup database:**
+4. **データベースのセットアップ：**
+
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
-5. **Start development server:**
+5. **開発用サーバーを起動：**
+
    ```bash
    npm run dev
    ```
 
-## API Endpoints
+## API エンドポイント
 
-### Accounts (取引先)
-- `GET /api/accounts` - List all accounts
-- `POST /api/accounts` - Create account
+### 取引先（Accounts）
 
-### Contacts (連絡先)
-- `GET /api/contacts` - List all contacts with account info
-- `POST /api/contacts` - Create contact
+* `GET /api/accounts` - すべての取引先一覧
+* `POST /api/accounts` - 取引先の新規作成
 
-### Opportunities (案件)
-- `GET /api/anken` - List all opportunities with contact and account names
-- `GET /api/anken/:id` - Get single opportunity
-- `POST /api/anken` - Create opportunity
-- `PUT /api/anken/:id` - Update opportunity
-- `DELETE /api/anken/:id` - Delete opportunity
+### 連絡先（Contacts）
 
-## API Response Format
+* `GET /api/contacts` - 取引先情報付きの連絡先一覧
+* `POST /api/contacts` - 連絡先の新規作成
 
-Opportunity responses include related data:
+### 案件（Opportunities）
+
+* `GET /api/anken` - 案件一覧（連絡先・取引先名付き）
+* `GET /api/anken/:id` - 単一の案件情報取得
+* `POST /api/anken` - 案件の新規作成
+* `PUT /api/anken/:id` - 案件の更新
+* `DELETE /api/anken/:id` - 案件の削除
+
+## API レスポンス形式
+
+案件情報のレスポンスには関連データが含まれます：
 
 ```json
 {
@@ -113,67 +127,72 @@ Opportunity responses include related data:
 }
 ```
 
-## Environment Variables
+## 環境変数
 
-- `DATABASE_URL` - PostgreSQL connection string
-- `PORT` - Server port (default: 3000)
-- `NODE_ENV` - Environment (development/production)
+* `DATABASE_URL` - PostgreSQL の接続文字列
+* `PORT` - サーバーのポート番号（デフォルト：3000）
+* `NODE_ENV` - 実行環境（development / production）
 
-## Project Structure
+## プロジェクト構成
 
 ```
 ├── src/
-│   ├── server.js          # Express server
-│   └── db.js              # Prisma client
+│   ├── server.js          # Express サーバー
+│   └── db.js              # Prisma クライアント
 ├── prisma/
-│   └── schema.prisma      # Database schema
+│   └── schema.prisma      # データベーススキーマ
 ├── public/
-│   └── index.html         # Frontend
-├── docker-compose.yml     # Docker setup
-├── Dockerfile            # Container definition
+│   └── index.html         # フロントエンド
+├── docker-compose.yml     # Docker 設定
+├── Dockerfile             # コンテナ定義
 └── README.md
 ```
 
-## Scripts
+## スクリプト
 
-- `npm start` - Start production server
-- `npm run dev` - Start development server with nodemon
-- `npx prisma generate` - Generate Prisma client
-- `npx prisma db push` - Push schema changes to database
-- `npx prisma studio` - Open database browser
+* `npm start` - 本番用サーバーの起動
+* `npm run dev` - nodemon による開発用サーバーの起動
+* `npx prisma generate` - Prisma クライアントの生成
+* `npx prisma db push` - データベースへのスキーマ反映
+* `npx prisma studio` - データベースブラウザの起動
 
-## Deployment
+## デプロイ
 
-### VPS Deployment with Docker
+### Docker を使った VPS へのデプロイ
 
-1. **Copy files to VPS:**
+1. **ファイルを VPS にコピー：**
+
    ```bash
    scp -r . user@your-vps:/path/to/app
    ```
 
-2. **Start services:**
+2. **サービス起動：**
+
    ```bash
    docker-compose up -d
    ```
 
-3. **Check status:**
+3. **ステータス確認：**
+
    ```bash
    docker-compose ps
    docker-compose logs app
    ```
 
-### Manual VPS Deployment
+### 手動での VPS デプロイ
 
-1. **Install Node.js and PostgreSQL on VPS**
+1. **VPS に Node.js と PostgreSQL をインストール**
 
-2. **Setup database:**
+2. **データベースのセットアップ：**
+
    ```sql
    CREATE DATABASE anken_db;
    CREATE USER anken_user WITH PASSWORD 'your_password';
    GRANT ALL PRIVILEGES ON DATABASE anken_db TO anken_user;
    ```
 
-3. **Deploy application:**
+3. **アプリのデプロイ：**
+
    ```bash
    npm ci --production
    npx prisma generate
@@ -181,13 +200,13 @@ Opportunity responses include related data:
    npm start
    ```
 
-## Security Notes
+## セキュリティ上の注意
 
-- Change default database credentials in production
-- Use environment variables for sensitive data
-- Enable SSL for database connections in production
-- Consider implementing authentication for the web interface
+* 本番環境ではデフォルトの DB 認証情報を変更
+* 機密情報は環境変数で管理
+* 本番環境では DB 接続に SSL を有効化
+* Web インターフェースに認証機能の導入を検討
 
-## License
+## ライセンス
 
 MIT License
