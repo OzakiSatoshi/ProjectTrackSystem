@@ -59,9 +59,17 @@ app.get('/api/accounts/:id', async (req, res) => {
 // Create account
 app.post('/api/accounts', async (req, res) => {
   try {
-    const { account_name } = req.body;
+    const accountData = req.body;
+    
+    // Auto-generate account number if not provided
+    if (!accountData.account_number) {
+      const timestamp = Date.now().toString().slice(-8); // Last 8 digits of timestamp
+      const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      accountData.account_number = `ACC${timestamp}${randomNum}`;
+    }
+    
     const account = await prisma.account.create({
-      data: { account_name }
+      data: accountData
     });
     res.status(201).json(account);
   } catch (error) {
