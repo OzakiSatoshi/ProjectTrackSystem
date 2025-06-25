@@ -102,6 +102,7 @@ The core entity is `anken` (project) with comprehensive fields:
 - **Environment**: Requires `DATABASE_URL` for PostgreSQL connection
 
 ## Changelog
+- June 25, 2025: Changed anken price field to string type and updated UI labels from "価格" to "単価"
 - June 24, 2025: Enhanced database schema based on real account data
   - Expanded Account model with comprehensive business fields (address, contact info, industry, revenue)
   - Enhanced Contact model with job details and contact information
