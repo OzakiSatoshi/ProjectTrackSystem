@@ -446,14 +446,8 @@
                     <h3 style="margin: 0 0 15px 0; color: #2c3e50;">取引先一覧</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label for="accountSearchText">会社名・業界</label>
+                            <label for="accountSearchText">会社名</label>
                             <input type="text" id="accountSearchText" placeholder="キーワードで検索..." onInput="applyAccountFilters()">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="industryFilter">業界</label>
-                            <select id="industryFilter" onchange="applyAccountFilters()">
-                                <option value="">すべて</option>
-                            </select>
                         </div>
                     </div>
                     <div style="text-align: right;">
@@ -494,7 +488,7 @@
                     <textarea id="notes" rows="2"></textarea>
                 </div>
 
-                <h4 style="margin: 20px 0 10px 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">期間・価格</h4>
+                <h4 style="margin: 20px 0 10px 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">期間・単価</h4>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label for="start_date">開始日</label>
@@ -511,7 +505,7 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
-                        <label for="price">価格</label>
+                        <label for="price">単価</label>
                         <input type="text" id="price" placeholder="¥1,000,000">
                     </div>
                     <div class="form-group">
@@ -912,18 +906,7 @@
                     `<option value="${account.account_id}">${account.account_name}</option>`
                 ).join('');
                 
-            // Also populate industry filter for accounts section
-            const industryFilter = document.getElementById('industryFilter');
-            if (industryFilter) {
-                industryFilter.innerHTML = '<option value="">すべて</option>';
-                const uniqueIndustries = [...new Set(accounts.map(a => a.industry_code).filter(Boolean))];
-                uniqueIndustries.forEach(industry => {
-                    const option = document.createElement('option');
-                    option.value = industry;
-                    option.textContent = industry;
-                    industryFilter.appendChild(option);
-                });
-            }
+
             
             // Populate both account filters with account names
             const accountFilter = document.getElementById('accountFilter');
