@@ -124,3 +124,5 @@ Preferred communication style: Simple, everyday language.
 Japanese business conventions: Surname first, given name second in contact forms.
 Data structure: Email addresses belong to contacts, not accounts (companies).
 Form simplification: Remove unnecessary fields like salutation and duplicate company name fields.
+Duplicate prevention: Company names must be unique (block registration), contact names show warning but allow registration.
+Auto-generation: Contact names automatically generated from lastname + firstname when both fields are provided.
