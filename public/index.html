@@ -745,6 +745,38 @@
         </div>
     </div>
 
+    <!-- Contact Details Modal -->
+    <div id="contactDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>担当者詳細</h3>
+                <span class="close" onclick="closeModal('contactDetailsModal')">&times;</span>
+            </div>
+            <div id="contactDetailsContent">
+                <!-- Contact details will be populated here -->
+            </div>
+            <div class="form-actions">
+                <button onclick="closeModal('contactDetailsModal')" class="secondary">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Details Modal -->
+    <div id="accountDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>取引先詳細</h3>
+                <span class="close" onclick="closeModal('accountDetailsModal')">&times;</span>
+            </div>
+            <div id="accountDetailsContent">
+                <!-- Account details will be populated here -->
+            </div>
+            <div class="form-actions">
+                <button onclick="closeModal('accountDetailsModal')" class="secondary">閉じる</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentAnkenId = null;
         let currentContactId = null;
@@ -957,7 +989,7 @@
             }
             
             grid.innerHTML = contacts.map(contact => `
-                <div class="anken-card">
+                <div class="anken-card" onclick="showContactDetails('${contact.contact_id}')" style="cursor: pointer;">
                     <div class="anken-header">
                         <h3 class="anken-title">${contact.contact_name || '-'}</h3>
                     </div>
@@ -1039,7 +1071,7 @@
             }
             
             grid.innerHTML = accounts.map(account => `
-                <div class="anken-card">
+                <div class="anken-card" onclick="showAccountDetails('${account.account_id}')" style="cursor: pointer;">
                     <div class="anken-header">
                         <h3 class="anken-title">${account.account_name || '-'}</h3>
                     </div>
@@ -1559,6 +1591,109 @@
                 });
             } catch (error) {
                 console.error('Error loading account filters:', error);
+            }
+        }
+        
+        async function showContactDetails(contactId) {
+            try {
+                const response = await fetch(`/api/contacts/${contactId}`);
+                const contact = await response.json();
+                
+                document.getElementById('contactDetailsContent').innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">基本情報</h4>
+                            <div style="margin-bottom: 10px;"><strong>氏名:</strong> ${contact.contact_name || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>姓:</strong> ${contact.lastname || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>名:</strong> ${contact.firstname || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>取引先:</strong> ${contact.account?.account_name || '-'}</div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">職務情報</h4>
+                            <div style="margin-bottom: 10px;"><strong>役職:</strong> ${contact.jobtitle || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>部署:</strong> ${contact.department || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>会社名:</strong> ${contact.company || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">連絡先</h4>
+                            <div style="margin-bottom: 10px;"><strong>電話1:</strong> ${contact.telephone1 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>電話2:</strong> ${contact.telephone2 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>電話3:</strong> ${contact.telephone3 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>携帯電話:</strong> ${contact.mobilephone || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>FAX:</strong> ${contact.fax || '-'}</div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">メール</h4>
+                            <div style="margin-bottom: 10px;"><strong>メール1:</strong> ${contact.email_address1 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>メール2:</strong> ${contact.email_address2 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>メール3:</strong> ${contact.email_address3 || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    ${contact.description ? `
+                        <div style="margin-top: 20px;">
+                            <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">備考</h4>
+                            <p style="line-height: 1.6; color: #666;">${contact.description}</p>
+                        </div>
+                    ` : ''}
+                `;
+                
+                openModal('contactDetailsModal');
+            } catch (error) {
+                console.error('Error loading contact details:', error);
+                alert('担当者詳細の読み込みに失敗しました');
+            }
+        }
+        
+        async function showAccountDetails(accountId) {
+            try {
+                const response = await fetch(`/api/accounts/${accountId}`);
+                const account = await response.json();
+                
+                document.getElementById('accountDetailsContent').innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">基本情報</h4>
+                            <div style="margin-bottom: 10px;"><strong>会社名:</strong> ${account.account_name || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>取引先番号:</strong> ${account.account_number || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>業界:</strong> ${account.industry_code || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>Webサイト:</strong> ${account.website_url ? `<a href="${account.website_url}" target="_blank">${account.website_url}</a>` : '-'}</div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">連絡先</h4>
+                            <div style="margin-bottom: 10px;"><strong>電話1:</strong> ${account.telephone1 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>電話2:</strong> ${account.telephone2 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>FAX:</strong> ${account.fax || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    ${account.address1_line1 ? `
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">住所</h4>
+                            <div style="margin-bottom: 10px;"><strong>住所1:</strong> ${account.address1_line1 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>住所2:</strong> ${account.address1_line2 || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>市区町村:</strong> ${account.address1_city || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>都道府県:</strong> ${account.address1_state || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>郵便番号:</strong> ${account.address1_postal || '-'}</div>
+                            <div style="margin-bottom: 10px;"><strong>国:</strong> ${account.address1_country || '-'}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${account.description ? `
+                        <div style="margin-top: 20px;">
+                            <h4 style="margin-bottom: 10px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px;">備考</h4>
+                            <p style="line-height: 1.6; color: #666;">${account.description}</p>
+                        </div>
+                    ` : ''}
+                `;
+                
+                openModal('accountDetailsModal');
+            } catch (error) {
+                console.error('Error loading account details:', error);
+                alert('取引先詳細の読み込みに失敗しました');
             }
         }
     </script>
