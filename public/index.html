@@ -334,9 +334,9 @@
         </header>
         
         <div class="actions">
-            <button onclick="showSection('anken')">案件一覧</button>
-            <button onclick="showSection('contacts')" class="secondary">担当者一覧</button>
-            <button onclick="showSection('accounts')" class="secondary">取引先一覧</button>
+            <button id="ankenBtn" onclick="showSection('anken')" class="secondary active">案件一覧</button>
+            <button id="contactsBtn" onclick="showSection('contacts')" class="secondary">担当者一覧</button>
+            <button id="accountsBtn" onclick="showSection('accounts')" class="secondary">取引先一覧</button>
             <button onclick="openModal('ankenModal')" class="secondary">新規案件作成</button>
             <button onclick="loadData()" class="secondary">更新</button>
         </div>
